@@ -111,7 +111,15 @@ $sizes = $wpdb->get_col($wpdb->prepare("SELECT DISTINCT size FROM product_varian
         <input type="text" class="quantity-input" id="qty-input" value="1" readonly>
         <button class="quantity-btn" id="qty-plus">+</button>
       </div>
-      <button class="btn btn-dark">Thêm vào giỏ</button>
+      <!-- Thêm vào giỏ hàng -->
+      <form method="post" id="add-to-cart-form" autocomplete="off">
+          <input type="hidden" name="product_id" value="<?php echo $product->product_id; ?>">
+          <input type="hidden" name="color" id="cart-color">
+          <input type="hidden" name="size" id="cart-size">
+          <input type="hidden" name="quantity" id="cart-qty">
+          <button type="submit" class="btn btn-dark">Thêm vào giỏ</button>
+      </form>
+      <div id="toast-message" style="display:none;position:fixed;top:30px;right:30px;z-index:9999;padding:14px 24px;background:#222;color:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:16px;"></div>
     </div>
   </div>
 </div>
@@ -211,7 +219,58 @@ document.addEventListener('DOMContentLoaded', function() {
         let v = parseInt(qtyInput.value, 10);
         if (v < stock) qtyInput.value = v + 1;
     };
+
+    // Thêm vào giỏ hàng
+    document.getElementById('add-to-cart-form').onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('cart-color').value = document.querySelector('.color-dot.selected')?.getAttribute('data-color') || '';
+        document.getElementById('cart-size').value = document.querySelector('.size-option.active')?.getAttribute('data-size') || '';
+        document.getElementById('cart-qty').value = document.getElementById('qty-input').value;
+
+        var formData = new FormData(this);
+        fetch('<?php echo admin_url('admin-ajax.php'); ?>', {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: new URLSearchParams([
+                ['action', 'fashion_add_to_cart'],
+                ['product_id', formData.get('product_id')],
+                ['color', formData.get('color')],
+                ['size', formData.get('size')],
+                ['quantity', formData.get('quantity')]
+            ])
+        })
+        .then(res => res.json())
+        .then(data => {
+            showToast(data.success ? "Đã thêm vào giỏ hàng!" : (data.message || "Có lỗi xảy ra!"), data.success ? "success" : "error");
+        });
+        return false;
+    };
+
+    function showToast(message, type) {
+        var toast = document.getElementById('toast-message');
+        toast.textContent = message;
+        toast.style.background = type === "success" ? "#222" : "#e53935";
+        toast.style.display = 'block';
+        setTimeout(function() {
+            toast.style.display = 'none';
+        }, 2500);
+    }
 });
 </script>
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'], $_POST['color'], $_POST['size'], $_POST['quantity'])) {
+    require_once get_template_directory() . '/functions.php'; // Đảm bảo đã có hàm add_to_cart
+    add_to_cart(
+        intval($_POST['product_id']),
+        $_POST['color'],
+        $_POST['size'],
+        intval($_POST['quantity'])
+    );
+    // Chuyển hướng sang trang cart
+    wp_redirect(home_url('/cart'));
+    exit;
+}
+?>
 
 <?php get_footer(); ?>

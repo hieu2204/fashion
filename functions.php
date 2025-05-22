@@ -6,6 +6,22 @@ if (session_status() == PHP_SESSION_NONE) {
     });
 }
 
+function add_to_cart($product_id, $color, $size, $quantity) {
+    if (session_status() == PHP_SESSION_NONE) session_start();
+    $key = $product_id . '_' . $color . '_' . $size;
+    if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
+    if (isset($_SESSION['cart'][$key])) {
+        $_SESSION['cart'][$key]['quantity'] += $quantity;
+    } else {
+        $_SESSION['cart'][$key] = [
+            'product_id' => $product_id,
+            'color' => $color,
+            'size' => $size,
+            'quantity' => $quantity
+        ];
+    }
+}
+
 // Kết nối PDO
 function get_pdo_connection() {
     static $pdo = null;
@@ -104,4 +120,54 @@ function fashion_search_products() {
     }
     wp_send_json(['total' => intval($total), 'products' => $results]);
 }
+
+add_action('wp_ajax_fashion_add_to_cart', 'fashion_add_to_cart');
+add_action('wp_ajax_nopriv_fashion_add_to_cart', 'fashion_add_to_cart');
+function fashion_add_to_cart() {
+    if (session_status() == PHP_SESSION_NONE) session_start();
+    $product_id = intval($_POST['product_id']);
+    $color = sanitize_text_field($_POST['color']);
+    $size = sanitize_text_field($_POST['size']);
+    $quantity = intval($_POST['quantity']);
+    if ($product_id && $color && $size && $quantity > 0) {
+        $key = $product_id . '_' . $color . '_' . $size;
+        if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];
+        if (isset($_SESSION['cart'][$key])) {
+            $_SESSION['cart'][$key]['quantity'] += $quantity;
+        } else {
+            $_SESSION['cart'][$key] = [
+                'product_id' => $product_id,
+                'color' => $color,
+                'size' => $size,
+                'quantity' => $quantity
+            ];
+        }
+        wp_send_json(['success' => true]);
+    } else {
+        wp_send_json(['success' => false, 'message' => 'Thiếu thông tin sản phẩm']);
+    }
+    wp_die();
+}
+
+add_action('wp_ajax_fashion_cart_update', 'fashion_cart_update');
+add_action('wp_ajax_nopriv_fashion_cart_update', 'fashion_cart_update');
+function fashion_cart_update() {
+    if (session_status() == PHP_SESSION_NONE) session_start();
+    $key = $_POST['key'];
+    $type = $_POST['type'];
+    if (isset($_SESSION['cart'][$key])) {
+        if ($type === 'plus') {
+            $_SESSION['cart'][$key]['quantity']++;
+        } elseif ($type === 'minus') {
+            $_SESSION['cart'][$key]['quantity']--;
+            if ($_SESSION['cart'][$key]['quantity'] < 1) unset($_SESSION['cart'][$key]);
+        } elseif ($type === 'remove') {
+            unset($_SESSION['cart'][$key]);
+        }
+    }
+    wp_die();
+}
+
+
+
 
