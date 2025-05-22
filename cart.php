@@ -97,7 +97,10 @@ unset($item);
                     <span class="fw-bold">Subtotal</span>
                     <span class="ms-3">$<?php echo number_format($subtotal, 2); ?></span>
                 </div>
-                <button class="btn btn-dark w-100" style="max-width:320px;">Checkout</button>
+                <!-- Thay nút Checkout trong cart.php -->
+<form action="<?php echo site_url('/checkout'); ?>" method="get" class="w-100" style="max-width:320px;">
+    <button type="submit" class="btn btn-dark w-100">Checkout</button>
+</form>
             </div>
         </div>
     </div>
