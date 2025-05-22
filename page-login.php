@@ -6,7 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-$pdo = get_pdo_connection();
+
 
 // Xử lý form đăng nhập
 $login_success = false;
@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['log'], $_POST['pwd'])
 }
 
 get_header();
+$pdo = get_pdo_connection();
 ?>
 <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/login.css">
 
