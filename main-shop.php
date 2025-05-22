@@ -714,18 +714,18 @@ $price_ranges = [
                                     <?php endif; ?>
                                     <?php if ($first_image_url): ?>
                                         <a href="<?php echo esc_url( get_permalink( get_page_by_path('product-detail') ) . '?product_id=' . $product->product_id ); ?>">
-                                        <img src="<?php echo esc_url(get_template_directory_uri() . '/assets' . $first_image_url); ?>"
-                                             alt="<?php echo esc_attr($product->name); ?>"
-                                             class="product-main-image img-fluid"
-                                             data-color-id="<?php echo $first_color_id; ?>"
-                                             style="max-height:300px;object-fit:cover;">
+                                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets' . $first_image_url); ?>"
+                                                 alt="<?php echo esc_attr($product->name); ?>"
+                                                 class="product-main-image img-fluid"
+                                                 data-color-id="<?php echo $first_color_id; ?>"
+                                                 style="max-height:300px;object-fit:cover;">
                                         </a>
                                     <?php else: ?>
                                         <a href="<?php echo esc_url( get_permalink( get_page_by_path('product-detail') ) . '?product_id=' . $product->product_id ); ?>">
-                                        <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/no-image.jpg'); ?>"
-                                             alt="No image"
-                                             class="product-main-image img-fluid"
-                                             style="max-height:300px;object-fit:cover;">
+                                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/no-image.jpg'); ?>"
+                                                 alt="No image"
+                                                 class="product-main-image img-fluid"
+                                                 style="max-height:300px;object-fit:cover;">
                                         </a>
                                     <?php endif; ?>
 
@@ -936,3 +936,23 @@ jQuery(document).ready(function($) {
         <img src="<?php echo get_template_directory_uri(); ?>/assets/images/model-right.png" alt="" style="position:absolute; right:0; bottom:0; width:120px; max-width:30vw; z-index:1;">
     </div>
 </div>
+
+<?php
+// Map tên màu sang mã màu hex
+function get_color_hex_by_name($color_name) {
+    $map = [
+        'RED' => '#ff0000',
+        'GREEN' => '#00ff00',
+        'BLUE' => '#0074d9',
+        'YELLOW' => '#ffe600',
+        'WHITE' => '#ffffff',
+        'BLACK' => '#222222',
+        'BEIGE' => '#f5f5dc',
+        'PINK' => '#ffb6c1',
+        'BROWN' => '#8b4513',
+        // Thêm các màu khác nếu cần
+    ];
+    $key = strtoupper(trim($color_name));
+    return $map[$key] ?? '#eee';
+}
+?>
