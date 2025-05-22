@@ -10,13 +10,14 @@ if (session_status() == PHP_SESSION_NONE) {
 function get_pdo_connection() {
     static $pdo = null;
     if ($pdo === null) {
-        $host = DB_HOST;
+        $host = 'localhost';
+        $port = 3307;
         $db   = DB_NAME;
         $user = DB_USER;
         $pass = DB_PASSWORD;
         $charset = DB_CHARSET;
 
-        $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+        $dsn = "mysql:host=$host;port=$port;dbname=$db;charset=$charset";
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -31,6 +32,7 @@ function get_pdo_connection() {
     }
     return $pdo;
 }
+
 
 // Hàm kiểm tra đăng nhập
 function is_custom_user_logged_in() {

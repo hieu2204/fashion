@@ -180,96 +180,96 @@ $price_ranges = [
 ?>
 <style>
     body {
-        font-family: 'Arial', sans-serif;
-        background-color: #f8f9fa;
+        font-family: 'Inter', Arial, sans-serif;
+        background: #fff;
+        color: #222;
     }
     /* Fashion Title Styles */
 .fashion-title {
-    margin-top: 32px;
-    margin-bottom: 32px;
-    font-size: 2.2rem;
+    margin-top: 40px;
+    margin-bottom: 18px;
+    font-size: 2.3rem;
+    font-weight: 700;
     letter-spacing: 2px;
 }
 
-.container-fluid.py-4 {
-    margin-top: 0; /* Đã có margin ở .fashion-title rồi */
+.breadcrumb {
+    background: none;
+    padding: 0;
+    margin-bottom: 28px;
+    font-size: 15px;
+    color: #888;
+}
+.breadcrumb a {
+    color: #888;
+    text-decoration: none;
+}
+.breadcrumb .active {
+    color: #222;
+    font-weight: 500;
 }
 
-@media (max-width: 991px) {
-    .fashion-title {
-        margin-top: 16px;
-        margin-bottom: 18px;
-        font-size: 1.4rem;
-    }
+.container-fluid.py-4 {
+    margin-top: 0;
 }
-    /* Sidebar filter styles */
+
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Sidebar filter styles */
 .sidebar {
-    background: #fff;
-    border-radius: 12px;
-    padding: 28px 20px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-    margin-bottom: 30px;
-    margin-left: 24px;
-    margin-right: 24px;
-    margin-top: 40px;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 0 0 10px;
+    margin: 0 0 0 0;
+    min-width: 210px;
 }
 
 .filter-section {
-    margin-bottom: 32px;
-    padding-bottom: 18px;
-    border-bottom: 1px solid #eee;
-}
-.filter-section:last-child {
+    margin-bottom: 28px;
+    padding-bottom: 0;
     border-bottom: none;
 }
 .filter-section h6 {
     font-weight: 700;
-    margin-bottom: 18px;
+    margin-bottom: 12px;
     color: #222;
-    font-size: 17px;
+    font-size: 15px;
     letter-spacing: 0.5px;
+    text-transform: none;
 }
     
-    .color-option {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        display: inline-block;
-        margin: 0 8px 8px 0;
-        cursor: pointer;
-        border: 2px solid #eee;
-        position: relative;
-        transition: box-shadow 0.15s, border 0.15s;
-    }
-    
-    .color-option.selected {
-        border: 2.5px solid #e53935 !important;
-        box-shadow: 0 0 0 2px #fff, 0 0 0 5px #e53935;
-    }
-    
-    .color-option.selected::after {
-        content: '✓';
-        position: absolute;
-        top: 50%; left: 50%;
-        transform: translate(-50%, -50%);
-        color: #fff;
-        font-size: 13px;
-        font-weight: bold;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.25);
-    }
-    
-    /* Size filter */
+    .color-option,
+.product-color-dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 6px 8px 0;
+    cursor: pointer;
+    border: 2px solid #eee;
+    position: relative;
+    transition: box-shadow 0.15s, border 0.15s;
+}
+.color-option.selected,
+.product-color-dot.active {
+    border: 2.5px solid #222 !important;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 5px #222;
+}
 .size-option {
     display: inline-block;
-    width: 38px;
-    height: 38px;
-    line-height: 36px;
+    width: 32px;
+    height: 32px;
+    line-height: 30px;
     text-align: center;
     border: 1.5px solid #bbb;
-    border-radius: 8px;
-    margin: 0 8px 10px 0;
+    border-radius: 6px;
+    margin: 0 6px 8px 0;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
     background: #fafbfc;
     color: #333;
     transition: all 0.15s;
@@ -281,26 +281,46 @@ $price_ranges = [
     color: #fff;
     border-color: #222;
 }
+.filter-section label {
+    font-size: 14px;
+    color: #444;
+    font-weight: 400;
+    margin-bottom: 0;
+    cursor: pointer;
+}
+.filter-section input[type="checkbox"] {
+    margin-right: 7px;
+    accent-color: #222;
+}
+.btn.btn-dark.btn-sm {
+    background: #222;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    padding: 6px 18px;
+    margin-top: 10px;
+}
     
     .product-card {
         background: #fff;
-        border-radius: 12px;
+        border-radius: 14px;
         overflow: hidden;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        transition: transform 0.2s, box-shadow 0.2s;
         margin-bottom: 32px;
         cursor: pointer;
+        border: 1px solid #f2f2f2;
     }
     
     .product-card:hover {
-        transform: translateY(-6px) scale(1.01);
-        box-shadow: 0 6px 24px rgba(0,0,0,0.13);
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 6px 24px rgba(0,0,0,0.10);
     }
     
     .product-image {
         position: relative;
         overflow: hidden;
-        height: 320px;
+        height: 260px;
         background: #f6f6f6;
         display: flex;
         align-items: center;
@@ -308,7 +328,7 @@ $price_ranges = [
     }
     
     .product-image img {
-        max-height: 300px;
+        max-height: 240px;
         object-fit: cover;
         width: auto;
         margin: 0 auto;
@@ -323,270 +343,138 @@ $price_ranges = [
     }
     
     .product-card:hover .product-image img:not(.hidden) {
-        transform: scale(1.05);
+        transform: scale(1.04);
     }
     
     .product-info {
-        padding: 15px;
+        padding: 14px 10px 10px 10px;
     }
     
     .product-title {
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
-        margin-bottom: 7px;
+        margin-bottom: 6px;
         color: #222;
-        min-height: 38px;
+        min-height: 36px;
     }
     
     .product-price {
-        font-size: 17px;
+        font-size: 16px;
         font-weight: 700;
         color: #222;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
     
     .product-price .old-price {
         text-decoration: line-through;
         color: #999;
-        font-size: 15px;
-        margin-left: 10px;
+        font-size: 14px;
+        margin-left: 8px;
     }
     
     .product-colors {
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
     
     .product-color-dot {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 5px;
-        border: 1px solid #eee;
-        cursor: pointer;
-        transition: transform 0.2s ease;
-    }
-    
-    .product-color-dot:hover {
-        transform: scale(1.2);
+        border: 1.5px solid #eee;
+        margin-right: 3px;
+        width: 16px;
+        height: 16px;
     }
     
     .product-color-dot.active {
-        border: 3px solid rgb(0, 0, 0) !important;   /* Viền đỏ nổi bật */
-        /* box-shadow: 0 0 0 3px #fff, 0 0 0 6px #e53935; */
-        outline: none;
+        border: 2.5px solid #222 !important;
+        box-shadow: 0 0 0 2px #fff, 0 0 0 5px #222;
     }
     
     .product-sizes {
-        font-size: 13px;
-        color: #666;
+        font-size: 12px;
+        color: #888;
     }
     
     .sale-badge {
         position: absolute;
         top: 12px;
         left: 12px;
-        background: #dc3545;
+        background: #222;
         color: #fff;
-        padding: 5px 12px;
-        border-radius: 16px;
-        font-size: 13px;
+        padding: 4px 10px;
+        border-radius: 14px;
+        font-size: 12px;
         font-weight: 700;
         z-index: 2;
-    }
-    
-    .filter-section {
-        margin-bottom: 25px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .filter-section:last-child {
-        border-bottom: none;
-    }
-    
-    .filter-section h6 {
-        font-weight: 600;
-        margin-bottom: 15px;
-        color: #333;
-    }
-    
-    .view-options {
-        display: flex;
-        gap: 5px;
-        margin-bottom: 20px;
-    }
-    
-    .view-btn {
-        width: 30px;
-        height: 30px;
-        border: 1px solid #ddd;
-        background: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
-    
-    .view-btn.active {
-        background: #333;
-        color: white;
+        letter-spacing: 1px;
     }
     
     .pagination-custom {
         justify-content: center;
-        margin-top: 40px;
+        margin-top: 30px;
+        margin-bottom: 10px;
     }
     
     .pagination-custom .page-link {
-        color: #333;
-        border: 1px solid #ddd;
+        color: #222;
+        border: 1px solid #eee;
+        background: #fff;
+        padding: 0.45rem 0.85rem;
         margin: 0 2px;
+        border-radius: 6px;
+        font-size: 15px;
         text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .pagination-custom .page-link:hover {
+        color: #fff;
+        background: #222;
+        border-color: #222;
     }
     
     .pagination-custom .page-item.active .page-link {
-        background-color: #333;
-        border-color: #333;
-        color: white;
+        color: #fff;
+        background: #222;
+        border-color: #222;
     }
     
-    .loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255,255,255,0.8);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
+    .pagination-custom .page-item.disabled .page-link {
+        color: #bbb;
+        background: #fff;
+        border-color: #eee;
+        cursor: not-allowed;
     }
     
-    @media (max-width: 768px) {
+    .pagination-debug {
+        background: none;
+        padding: 0;
+        border-radius: 0;
+        margin-bottom: 0.5rem;
+        text-align: right;
+        font-size: 13px;
+        color: #888;
+    }
+    
+    @media (max-width: 991px) {
+        .fashion-title {
+            margin-top: 18px;
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+        }
         .sidebar {
-            margin-bottom: 20px;
+            min-width: 100%;
+            padding: 0;
+            margin-bottom: 18px;
+        }
+        .col-lg-9 {
+            padding-left: 0;
+        }
+        .product-image {
+            height: 180px;
+        }
+        .product-image img {
+            max-height: 160px;
         }
     }
-
-    /* Pagination Styles */
-.pagination-custom {
-    margin: 2rem 0;
-}
-
-.pagination-custom .page-link {
-    color: #333;
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    padding: 0.5rem 0.75rem;
-    margin: 0 2px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.pagination-custom .page-link:hover {
-    color: #fff;
-    background-color: #333;
-    border-color: #333;
-}
-
-.pagination-custom .page-item.active .page-link {
-    color: #fff;
-    background-color: #333;
-    border-color: #333;
-}
-
-.pagination-custom .page-item.disabled .page-link {
-    color: #6c757d;
-    background-color: #fff;
-    border-color: #dee2e6;
-    cursor: not-allowed;
-}
-
-.pagination-debug {
-    background-color: #f8f9fa;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    margin-bottom: 1rem;
-}
-
-/* Product Color Switching Fix */
-.product-color-dot {
-    transition: all 0.2s ease;
-    cursor: pointer !important;
-    position: relative;
-}
-
-.product-color-dot:hover {
-    transform: scale(1.1);
-}
-
-.product-color-dot.active {
-    border: 1.5px solid rgba(0, 0, 0, 1) !important;   /* Viền đỏ nổi bật */
-    box-shadow: 0 0 0 1px #fff, 0 0 0 3px rgba(0, 0, 0, 1);
-    outline: none;
-}
-
-/* Loading overlay */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.loading-overlay.show {
-    display: flex;
-}
-
-/* Thêm khoảng cách phía trên cho toàn bộ nội dung */
-.container-fluid.py-4 {
-    margin-top: 32px; /* hoặc 40px nếu muốn rộng hơn */
-}
-
-/* Tạo khoảng cách đều hai bên cho filter và sản phẩm */
-.row {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-/* Sidebar filter cách trái và phải đều */
-.sidebar {
-    margin-left: 24px;
-    margin-right: 24px;
-}
-
-/* Đảm bảo sản phẩm không dính sát filter */
-.col-lg-9 {
-    padding-left: 24px;
-}
-
-/* Đảm bảo filter không dính sát lề trái */
-.col-lg-3 {
-    padding-right: 0;
-    padding-left: 0;
-}
-
-/* Responsive: giảm khoảng cách trên mobile */
-@media (max-width: 991px) {
-    .container-fluid.py-4 {
-        margin-top: 16px;
-    }
-    .sidebar,
-    .col-lg-9 {
-        margin-left: 0;
-        margin-right: 0;
-        padding-left: 0;
-        padding-right: 0;
-    }
-}
 </style>
 <div class="container-fluid py-4">
     <div class="row">
@@ -656,22 +544,22 @@ $price_ranges = [
                         }
                         ?>
                         <div class="col-lg-4 col-md-6 mb-4 product-item">
-                            <div class="card product-card h-100" data-product-id="<?php echo $product->product_id; ?>">
-                                <div class="product-image position-relative text-center" style="height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                            <div class="card product-card h-100 border-0 shadow-sm" data-product-id="<?php echo $product->product_id; ?>" style="border-radius:18px;">
+                                <div class="product-image position-relative text-center" style="height:260px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#f8f8f8;">
                                     <?php if ($has_discount): ?>
-                                        <span class="sale-badge position-absolute top-0 start-0 bg-danger text-white px-2 py-1" style="font-size:12px;"><?php _e('SALE', 'textdomain'); ?></span>
+                                        <span class="sale-badge" style="top:14px;left:14px;"><?php _e('SALE', 'textdomain'); ?></span>
                                     <?php endif; ?>
                                     <?php if ($first_image_url): ?>
                                         <img src="<?php echo esc_url(get_template_directory_uri() . '/assets' . $first_image_url); ?>"
                                              alt="<?php echo esc_attr($product->name); ?>"
                                              class="product-main-image img-fluid"
                                              data-color-id="<?php echo $first_color_id; ?>"
-                                             style="max-height:300px;object-fit:cover;">
+                                             style="max-height:220px;object-fit:cover;border-radius:12px;">
                                     <?php else: ?>
                                         <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/no-image.jpg'); ?>"
                                              alt="No image"
                                              class="product-main-image img-fluid"
-                                             style="max-height:300px;object-fit:cover;">
+                                             style="max-height:220px;object-fit:cover;border-radius:12px;">
                                     <?php endif; ?>
 
                                     <?php
@@ -688,41 +576,42 @@ $price_ranges = [
                                     endforeach;
                                     ?>
                                 </div>
-                                <div class="card-body product-info text-center">
-                                    <h6 class="product-title mb-2" style="min-height:38px;"><?php echo esc_html($product->name); ?></h6>
-                                    <div class="product-price mb-2">
+                                <div class="card-body product-info text-center px-2 py-3" style="background:#fff;">
+                                    <div class="d-flex justify-content-center align-items-center mb-2" style="min-height:24px;">
+                                        <?php if (!empty($colors_data)): ?>
+                                            <div class="product-colors" style="margin-bottom:0;">
+                                                <?php 
+                                                $color_map = [
+                                                    'Red' => '#ff6b6b', 'Blue' => '#2196f3', 'Green' => '#4caf50',
+                                                    'Yellow' => '#ffeb3b', 'Orange' => '#ffa500', 'Purple' => '#9c27b0',
+                                                    'Pink' => '#e91e63', 'Black' => '#333', 'White' => '#fff',
+                                                    'Gray' => '#607d8b', 'Brown' => '#795548'
+                                                ];
+                                                $color_names_rendered = [];
+                                                $first = true;
+                                                foreach ($colors_data as $color_id => $color_info):
+                                                    if (in_array($color_info['color_name'], $color_names_rendered)) continue;
+                                                    $color_names_rendered[] = $color_info['color_name'];
+                                                    $color_code = isset($color_map[$color_info['color_name']]) ? $color_map[$color_info['color_name']] : '#ccc';
+                                                ?>
+                                                    <span class="product-color-dot<?php echo $first ? ' active' : ''; ?>"
+                                                          data-color-id="<?php echo $color_id; ?>"
+                                                          style="background-color: <?php echo $color_code; ?>; border:1.5px solid #ddd; width:18px; height:18px; display:inline-block; border-radius:50%; margin:0 2px; cursor:pointer;"
+                                                          title="<?php echo esc_attr($color_info['color_name']); ?>"></span>
+                                                <?php
+                                                    $first = false;
+                                                endforeach;
+                                                ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <h6 class="product-title mb-1" style="font-size:15px;font-weight:600;min-height:36px;line-height:1.3;"><?php echo esc_html($product->name); ?></h6>
+                                    <div class="product-price mb-1" style="font-size:16px;">
                                         <span class="fw-bold text-dark">$<?php echo number_format($display_price, 2); ?></span>
                                         <?php if ($has_discount): ?>
                                             <span class="old-price text-muted ms-2" style="text-decoration:line-through;">$<?php echo number_format($product->base_price, 2); ?></span>
                                         <?php endif; ?>
                                     </div>
-                                    <?php if (!empty($colors_data)): ?>
-                                        <div class="product-colors mb-2">
-                                            <?php 
-                                            $color_map = [
-                                                'Red' => '#ff6b6b', 'Blue' => '#2196f3', 'Green' => '#4caf50',
-                                                'Yellow' => '#ffeb3b', 'Orange' => '#ffa500', 'Purple' => '#9c27b0',
-                                                'Pink' => '#e91e63', 'Black' => '#333', 'White' => '#fff',
-                                                'Gray' => '#607d8b', 'Brown' => '#795548'
-                                            ];
-                                            $color_names_rendered = [];
-                                            $first = true;
-                                            foreach ($colors_data as $color_id => $color_info):
-                                                // Nếu tên màu đã render rồi thì bỏ qua
-                                                if (in_array($color_info['color_name'], $color_names_rendered)) continue;
-                                                $color_names_rendered[] = $color_info['color_name'];
-                                                $color_code = isset($color_map[$color_info['color_name']]) ? $color_map[$color_info['color_name']] : '#ccc';
-                                            ?>
-                                                <span class="product-color-dot<?php echo $first ? ' active' : ''; ?>"
-                                                      data-color-id="<?php echo $color_id; ?>"
-                                                      style="background-color: <?php echo $color_code; ?>; border:1px solid #ddd; width:18px; height:18px; display:inline-block; border-radius:50%; margin:0 2px; cursor:pointer;"
-                                                      title="<?php echo esc_attr($color_info['color_name']); ?>"></span>
-                                            <?php
-                                                $first = false;
-                                            endforeach;
-                                            ?>
-                                        </div>
-                                    <?php endif; ?>
                                     <?php if (!empty($sizes)): ?>
                                         <div class="product-sizes text-muted" style="font-size:13px;">
                                             <?php _e('Sizes:', 'textdomain'); ?> <?php echo implode(', ', $sizes); ?>
@@ -837,3 +726,59 @@ jQuery(document).ready(function($) {
 });
 </script>
 <?php get_footer(); ?>
+
+<!-- Instagram Section -->
+<div class="shop-instagram-section" style="background:#fff; padding:48px 0 32px 0; margin-top:32px;">
+    <div class="container text-center">
+        <h3 style="font-family:'Inter',serif; font-weight:600; font-size:2rem; margin-bottom:10px;">Follow Us On Instagram</h3>
+        <p style="color:#888; font-size:15px; margin-bottom:32px;">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </p>
+        <div class="shop-instagram-gallery d-flex justify-content-center align-items-center" style="gap:12px; flex-wrap:wrap;">
+            <?php
+            // Lấy 7 sản phẩm ngẫu nhiên
+            $random_products = $wpdb->get_results("SELECT product_id, name FROM products ORDER BY RAND() LIMIT 7");
+            foreach ($random_products as $insta_product):
+                $insta_colors = get_product_colors_with_images($insta_product->product_id);
+                $insta_img_url = null;
+                // Lấy ảnh đầu tiên của bất kỳ màu nào
+                foreach ($insta_colors as $color) {
+                    if (!empty($color['images'])) {
+                        $insta_img_url = $color['images'][0]['url'];
+                        break;
+                    }
+                }
+                if ($insta_img_url):
+            ?>
+                <img src="<?php echo esc_url(get_template_directory_uri() . '/assets' . $insta_img_url); ?>"
+                     alt="<?php echo esc_attr($insta_product->name); ?>"
+                     style="width:110px; height:150px; object-fit:cover; border-radius:10px;">
+            <?php else: ?>
+                <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/no-image.jpg'); ?>"
+                     alt="No image"
+                     style="width:110px; height:150px; object-fit:cover; border-radius:10px;">
+            <?php endif; endforeach; ?>
+        </div>
+    </div>
+</div>
+
+<!-- Newsletter Section -->
+<div class="shop-newsletter-section" style="background:#fff; padding:56px 0 32px 0; position:relative;">
+    <div class="container position-relative">
+        <div class="row align-items-center justify-content-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <h3 style="font-family:'Inter',serif; font-weight:600; font-size:2rem; margin-bottom:10px;">Subscribe To Our Newsletter</h3>
+                <p style="color:#888; font-size:15px; margin-bottom:28px;">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                </p>
+                <form class="d-flex justify-content-center align-items-center flex-wrap" style="gap:12px;">
+                    <input type="email" class="form-control" placeholder="micholajiy@mail.com" style="max-width:320px; border-radius:6px; border:1.5px solid #eee; padding:12px 16px; font-size:15px;">
+                    <button type="submit" class="btn btn-dark" style="border-radius:6px; padding:12px 28px; font-size:15px;">Subscribe Now</button>
+                </form>
+            </div>
+        </div>
+        <!-- Fashion models left/right -->
+        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/model-left.png" alt="" style="position:absolute; left:0; bottom:0; width:120px; max-width:30vw; z-index:1;">
+        <img src="<?php echo get_template_directory_uri(); ?>/assets/images/model-right.png" alt="" style="position:absolute; right:0; bottom:0; width:120px; max-width:30vw; z-index:1;">
+    </div>
+</div>
