@@ -1,0 +1,113 @@
+.signup-page {
+    min-height: 100vh;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-content {
+    max-width: 430px;
+    margin: auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+    padding: 40px 32px 32px 32px;
+}
+
+.signup-content h1 {
+    font-weight: 700;
+    letter-spacing: 2px;
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.signup-content h4 {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.signup-content input.form-control {
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 16px;
+    background: #f6f6f6;
+    border: 1.5px solid #e0e0e0;
+    transition: border-color 0.2s;
+}
+
+.signup-content input.form-control:focus {
+    border-color: #222;
+    background: #fff;
+    box-shadow: none;
+}
+
+.signup-content .btn-dark {
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-top: 8px;
+}
+
+.signup-content .btn-dark:active,
+.signup-content .btn-dark:focus {
+    background: #111;
+}
+
+.signup-content .text-center a {
+    color: #e53935;
+    font-weight: 500;
+    text-decoration: underline;
+}
+
+.signup-content .text-center a:hover {
+    color: #b71c1c;
+    text-decoration: none;
+}
+
+.signup-content small {
+    color: #888;
+}
+
+/* Toast Notification */
+.toast-message {
+    display: none;
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    min-width: 240px;
+    max-width: 350px;
+    z-index: 99999;
+    background: #fff;
+    color: #222;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    padding: 18px 28px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-left: 6px solid #28a745;
+    transition: all 0.3s;
+}
+.toast-message.toast-error {
+    border-left-color: #e53935;
+    color: #e53935;
+}
+.toast-message.toast-success {
+    border-left-color: #28a745;
+    color: #28a745;
+}
+
+@media (max-width: 991px) {
+    .signup-page {
+        padding: 24px 0;
+    }
+    .signup-content {
+        padding: 28px 12px 18px 12px;
+        max-width: 100%;
+    }
+    .col-lg-6.d-none.d-lg-block {
+        display: none !important;
+    }
+}

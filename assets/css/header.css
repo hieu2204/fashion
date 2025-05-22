@@ -1,0 +1,227 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: white;
+}
+
+.header-container {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-container .navbar-brand {
+  font-family: volkhov, serif;
+  font-weight: 500;
+  font-size: 1.5rem;
+  width: 10vw;
+}
+
+.header-container .nav-link {
+  position: relative;
+  display: inline-block;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.header-container .nav-link.active {
+  color: #000;
+  font-weight: bold;
+}
+
+.header-container .nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #000;
+}
+
+.header-container .nav-link:hover {
+  color: #007bff;
+}
+
+.header-container .me-auto {
+  gap: 1.5rem;
+  align-items: center;
+  margin-left: auto;
+}
+
+.header-container .ml-auto {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.header-container .btn {
+  font-size: 0.8rem;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+}
+
+.header-container .filter-input {
+  width: 150px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.header-container .filter-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.header-container .nav-link img {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.header-container .nav-link .active {
+  width: 10vw;
+}
+
+.header-container .nav-link .badge {
+  position: absolute;
+  top: 15px;
+  right: 5px;
+  transform: translate(50%, -50%);
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 3px 6px;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 16px;
+  height: 16px;
+}
+
+.search-modal .modal-dialog {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 35vw;
+  max-width: 40%;
+  margin: 0;
+  transform: translateX(0);
+  z-index: 1050;
+}
+
+.search-modal .modal-content {
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  width: 100%;
+}
+
+.search-modal .search-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.search-modal .btn-back {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #686e75;
+  cursor: pointer;
+}
+
+.search-modal .search-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.search-modal .search-suggestions {
+  margin-top: 20px;
+}
+
+.search-modal .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-modal .tag {
+  background-color: #f1f1f1;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.search-modal .suggestions {
+  margin-top: 10px;
+}
+
+.search-modal .suggestion-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  text-decoration: none;
+}
+
+.search-modal .suggestion-item:hover {
+  background-color: #f9f9f9;
+}
+
+.search-modal .search-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.search-modal .search-result-item {
+  display: flex;
+  align-items: center;
+  width: calc(33.33% - 10px);
+  padding: 10px;
+  border: 1px solid #f1f1f1;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+}
+
+.search-modal .search-result-item:hover {
+  background-color: #f9f9f9;
+}
+
+.search-modal .result-image {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.search-modal .result-name {
+  font-size: 0.9rem;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
