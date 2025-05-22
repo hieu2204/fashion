@@ -71,3 +71,37 @@ if (file_exists(get_template_directory() . '/class-wp-bootstrap-navwalker.php'))
     error_log('Tệp Navwalker không tồn tại: ' . get_template_directory() . '/class-wp-bootstrap-navwalker.php');
 }
 
+add_action('wp_ajax_fashion_search_products', 'fashion_search_products');
+add_action('wp_ajax_nopriv_fashion_search_products', 'fashion_search_products');
+function fashion_search_products() {
+    global $wpdb;
+    $keyword = isset($_GET['keyword']) ? sanitize_text_field($_GET['keyword']) : '';
+    $results = [];
+    $total = 0;
+    if ($keyword) {
+        $total = $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM products WHERE name LIKE %s",
+            '%' . $wpdb->esc_like($keyword) . '%'
+        ));
+        $products = $wpdb->get_results($wpdb->prepare(
+            "SELECT p.product_id, p.name, p.discount_price, pci.image_url
+             FROM products p
+             LEFT JOIN product_colors pc ON p.product_id = pc.product_id
+             LEFT JOIN product_color_images pci ON pc.color_id = pci.color_id AND pci.is_primary = 1
+             WHERE p.name LIKE %s
+             GROUP BY p.product_id
+             LIMIT 20",
+            '%' . $wpdb->esc_like($keyword) . '%'
+        ));
+        foreach ($products as $p) {
+            $results[] = [
+                'id' => $p->product_id,
+                'name' => $p->name,
+                'image' => $p->image_url,
+                'price' => $p->discount_price
+            ];
+        }
+    }
+    wp_send_json(['total' => intval($total), 'products' => $results]);
+}
+

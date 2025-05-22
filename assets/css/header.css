@@ -225,3 +225,20 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.offcanvas.offcanvas-end {
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+    max-width: 420px;
+}
+.offcanvas .form-control {
+    font-size: 1.1rem;
+}
+#search-results {
+    max-height: calc(100vh - 220px);
+    overflow-y: auto;
+    padding-bottom: 12px;
+}
+#search-results .border-bottom:last-child {
+    border-bottom: none !important;
+}

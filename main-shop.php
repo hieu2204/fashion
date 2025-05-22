@@ -49,36 +49,49 @@ $total_pages = ceil($total_products / $per_page);
 // Khởi tạo biến where
 $where = "WHERE 1=1";
 
-// Filter màu
+// Tìm kiếm theo từ khóa
+if (!empty($_GET['s'])) {
+    $keyword = trim($_GET['s']);
+    $where .= " AND p.name LIKE '%" . esc_sql($keyword) . "%'";
+}
+
+// Filter theo màu
 if (!empty($_GET['filter_colors'])) {
-    $color_names = array_map(function($c) use ($wpdb) { return "'" . esc_sql($c) . "'"; }, $_GET['filter_colors']);
-    $where .= " AND p.product_id IN (
-        SELECT product_id FROM product_colors WHERE color_name IN (" . implode(',', $color_names) . ")
+    $colors = array_map('esc_sql', $_GET['filter_colors']);
+    $color_placeholders = "'" . implode("','", $colors) . "'";
+    $where .= " AND EXISTS (
+        SELECT 1 FROM product_colors pc
+        WHERE pc.product_id = p.product_id
+        AND pc.color_name IN ($color_placeholders)
     )";
 }
 
-// Filter size
+// Filter theo size
 if (!empty($_GET['filter_sizes'])) {
-    $sizes = array_map(function($s) use ($wpdb) { return "'" . esc_sql($s) . "'"; }, $_GET['filter_sizes']);
-    $where .= " AND p.product_id IN (
-        SELECT product_id FROM product_variants WHERE size IN (" . implode(',', $sizes) . ") AND stock_quantity > 0
+    $sizes = array_map('esc_sql', $_GET['filter_sizes']);
+    $size_placeholders = "'" . implode("','", $sizes) . "'";
+    $where .= " AND EXISTS (
+        SELECT 1 FROM product_variants pv
+        WHERE pv.product_id = p.product_id
+        AND pv.size IN ($size_placeholders)
+        AND pv.stock_quantity > 0
     )";
 }
 
-// Filter giá
+// Filter theo price
 if (!empty($_GET['filter_prices'])) {
     $price_conditions = [];
     foreach ($_GET['filter_prices'] as $range) {
-        if (strpos($range, '-') !== false) {
-            list($min, $max) = explode('-', $range);
-            if ($max === '') $max = 1000000; // Giá trên $200
-            $price_conditions[] = "(COALESCE(p.discount_price, p.base_price) BETWEEN $min AND $max)";
-        }
+        if ($range === '0-50') $price_conditions[] = "(p.base_price < 50)";
+        elseif ($range === '50-100') $price_conditions[] = "(p.base_price >= 50 AND p.base_price < 100)";
+        elseif ($range === '100-200') $price_conditions[] = "(p.base_price >= 100 AND p.base_price < 200)";
+        elseif ($range === '200-') $price_conditions[] = "(p.base_price >= 200)";
     }
     if ($price_conditions) {
         $where .= " AND (" . implode(' OR ', $price_conditions) . ")";
     }
 }
+
 // Get products for current page
 $products_query = "
     SELECT
@@ -576,6 +589,36 @@ $price_ranges = [
 
 /* Responsive: giảm khoảng cách trên mobile */
 @media (max-width: 991px) {
+/* Thêm khoảng cách phía trên cho toàn bộ nội dung */
+.container-fluid.py-4 {
+    margin-top: 32px; /* hoặc 40px nếu muốn rộng hơn */
+}
+
+/* Tạo khoảng cách đều hai bên cho filter và sản phẩm */
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Sidebar filter cách trái và phải đều */
+.sidebar {
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+/* Đảm bảo sản phẩm không dính sát filter */
+.col-lg-9 {
+    padding-left: 24px;
+}
+
+/* Đảm bảo filter không dính sát lề trái */
+.col-lg-3 {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+/* Responsive: giảm khoảng cách trên mobile */
+@media (max-width: 991px) {
     .container-fluid.py-4 {
         margin-top: 16px;
     }
@@ -590,6 +633,7 @@ $price_ranges = [
 </style>
 <div class="container-fluid py-4">
     <div class="row">
+        <?php if (empty($_GET['s'])): ?>
         <div class="col-lg-3">
             <!-- Filter Sidebar -->
             <div class="sidebar">
@@ -634,7 +678,8 @@ $price_ranges = [
                 </form>
             </div>
         </div>
-        <div class="col-lg-9">
+        <?php endif; ?>
+        <div class="<?php echo empty($_GET['s']) ? 'col-lg-9' : 'col-12'; ?>">
             <!-- Products Grid -->
             <div class="row" id="products-container">
                 <?php if (!empty($products)): ?>
@@ -662,16 +707,20 @@ $price_ranges = [
                                         <span class="sale-badge position-absolute top-0 start-0 bg-danger text-white px-2 py-1" style="font-size:12px;"><?php _e('SALE', 'textdomain'); ?></span>
                                     <?php endif; ?>
                                     <?php if ($first_image_url): ?>
-                                        <img src="<?php echo esc_url(get_template_directory_uri() . '/assets' . $first_image_url); ?>"
-                                             alt="<?php echo esc_attr($product->name); ?>"
-                                             class="product-main-image img-fluid"
-                                             data-color-id="<?php echo $first_color_id; ?>"
-                                             style="max-height:300px;object-fit:cover;">
+                                        <a href="<?php echo esc_url( get_permalink( get_page_by_path('product-detail') ) . '?product_id=' . $product->product_id ); ?>">
+                                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets' . $first_image_url); ?>"
+                                                 alt="<?php echo esc_attr($product->name); ?>"
+                                                 class="product-main-image img-fluid"
+                                                 data-color-id="<?php echo $first_color_id; ?>"
+                                                 style="max-height:300px;object-fit:cover;">
+                                        </a>
                                     <?php else: ?>
-                                        <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/no-image.jpg'); ?>"
-                                             alt="No image"
-                                             class="product-main-image img-fluid"
-                                             style="max-height:300px;object-fit:cover;">
+                                        <a href="<?php echo esc_url( get_permalink( get_page_by_path('product-detail') ) . '?product_id=' . $product->product_id ); ?>">
+                                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/no-image.jpg'); ?>"
+                                                 alt="No image"
+                                                 class="product-main-image img-fluid"
+                                                 style="max-height:300px;object-fit:cover;">
+                                        </a>
                                     <?php endif; ?>
 
                                     <?php
@@ -689,7 +738,11 @@ $price_ranges = [
                                     ?>
                                 </div>
                                 <div class="card-body product-info text-center">
-                                    <h6 class="product-title mb-2" style="min-height:38px;"><?php echo esc_html($product->name); ?></h6>
+                                    <h6 class="product-title mb-2" style="min-height:38px;">
+                                        <a href="<?php echo esc_url( get_permalink( get_page_by_path('product-detail') ) . '?product_id=' . $product->product_id ); ?>" class="text-dark text-decoration-none">
+                                            <?php echo esc_html($product->name); ?>
+                                        </a>
+                                    </h6>
                                     <div class="product-price mb-2">
                                         <span class="fw-bold text-dark">$<?php echo number_format($display_price, 2); ?></span>
                                         <?php if ($has_discount): ?>
