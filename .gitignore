@@ -1,2 +1,44 @@
-# Configuration
+# Các file cấu hình cá nhân/máy chủ
 wp-config.php
+.env
+*.env
+
+# Thư mục tạm, cache, log
+*.log
+*.tmp
+*.cache
+.cache/
+logs/
+debug.log
+
+# Thư mục upload, media (nếu có)
+uploads/
+media/
+assets/uploads/
+assets/images/uploads/
+
+# Thư mục vendor (nếu dùng composer, npm)
+vendor/
+node_modules/
+
+# File hệ thống IDE/OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# File backup, swap
+*.bak
+*.swp
+*.swo
+*.orig
+
+# File nén, xuất bản
+*.zip
+*.tar.gz
+
+# Các file khác không cần thiết
+*.local
+*.lock
