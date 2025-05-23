@@ -62,7 +62,7 @@
                             <li class="dropdown-item-text text-center fw-bold"><?php echo esc_html($user['full_name'] ?? 'Người dùng'); ?></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a href="<?php echo esc_url(home_url('/logout/')); ?>" class="dropdown-item text-danger text-center">Đăng xuất</a>
+                                <a href="<?php echo esc_url(home_url('/logout/')); ?>" class="dropdown-item text-center">Đăng xuất</a>
                             </li>
                         <?php else: ?>
                             <li>
