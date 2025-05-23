@@ -52,7 +52,7 @@ get_header();
                 <?php if ($login_success) : ?>
                     <?php $current_user = get_custom_current_user(); ?>
                     <div class="alert alert-success text-center">
-                        Đăng nhập thành công! Xin chào, <?php echo esc_html($current_user['full_name'] ?? 'Người dùng'); ?>
+                        Đăng nhập thành công! Xin chào, <?php echo esc_html($current_user->full_name ?? 'Người dùng'); ?>
                     </div>
                     <p class="text-center"><a href="<?php echo esc_url(wp_logout_url()); ?>">Đăng xuất</a></p>
                 <?php elseif ($error) : ?>

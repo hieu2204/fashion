@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
-    <meta charset="<?php bloginfo('charset'); ?>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title><?php wp_title('|', true, 'right'); ?></title>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
@@ -59,7 +58,7 @@
                         <?php if (isset($_SESSION['user_id'])): 
                             $user = get_custom_current_user();
                         ?>
-                            <li class="dropdown-item-text text-center fw-bold"><?php echo esc_html($user['full_name'] ?? 'Người dùng'); ?></li>
+                            <li class="dropdown-item-text text-center fw-bold"><?php echo esc_html(isset($user->full_name) ? $user->full_name : 'Người dùng'); ?></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <a href="<?php echo esc_url(home_url('/logout/')); ?>" class="dropdown-item text-center">Đăng xuất</a>
@@ -157,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
         searchInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                document.getElementById('sidebarSearchForm').submit();
+                window.location.href = "<?php echo esc_url( get_permalink( get_page_by_path('search-results') ) ); ?>?keyword=" + encodeURIComponent(this.value.trim());
             }
         });
     }
@@ -184,7 +183,9 @@ document.addEventListener('DOMContentLoaded', function () {
         `).join('');
         if (total > n) {
             html += `<div class="text-center py-2">
-                <a href="#" id="showMoreSearch" style="color:#e53935;font-weight:500;">Xem thêm ${total-n} sản phẩm</a>
+                <a href="<?php echo esc_url( get_permalink( get_page_by_path('search-results') ) ); ?>?keyword=${encodeURIComponent(searchInput.value.trim())}" 
+                   id="showMoreSearch" 
+                   style="color:#e53935;font-weight:500;">Xem thêm ${total-n} sản phẩm</a>
             </div>`;
         }
         resultsBox.innerHTML = html;

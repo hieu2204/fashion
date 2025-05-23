@@ -3,6 +3,200 @@
 get_header();
 ?>
 <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/product-detail.css">
+<style>
+.product-detail-page {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+    padding: 40px 32px 32px 32px;
+    margin-top: 80px;
+    margin-bottom: 36px;
+    font-family: 'Inter', Arial, sans-serif;
+}
+.product-gallery {
+    background: #f8f8f8;
+    border-radius: 14px;
+    padding: 24px 18px 18px 18px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+}
+.product-thumbnails {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 18px;
+    align-items:center;
+    height:400px;
+    overflow:auto;
+    flex-direction:column;
+    width: 80px;
+}
+.product-thumbnails::-webkit-scrollbar {
+  display: none;      
+}
+.thumb-img {
+    width: 60px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #eee;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: border 0.2s, opacity 0.2s;
+}
+.thumb-img.active,
+.thumb-img:hover {
+    border: 2.5px solid #222;
+    opacity: 1;
+}
+.product-main-image {
+    text-align: center;
+    margin-bottom: 0;
+}
+.product-main-image img {
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    background: #fff;
+    max-height: 380px;
+    max-width: 100%;
+}
+.product-info {
+    padding: 18px 12px 12px 32px;
+}
+.product-info h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+}
+.product-price {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 18px;
+}
+.product-price .old-price {
+    color: #aaa;
+    text-decoration: line-through;
+    font-size: 1.1rem;
+    margin-left: 10px;
+}
+.size-label, .color-label {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-right: 8px;
+}
+.size-options {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+}
+.size-option {
+    display: inline-block;
+    min-width: 36px;
+    height: 36px;
+    line-height: 34px;
+    text-align: center;
+    border: 1.5px solid #bbb;
+    border-radius: 8px;
+    background: #fafbfc;
+    color: #333;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+}
+.size-option.active,
+.size-option:hover {
+    background: #222;
+    color: #fff;
+    border-color: #222;
+}
+.color-options {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+}
+.color-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2.5px solid #eee;
+    display: inline-block;
+    cursor: pointer;
+    transition: border 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    position: relative;
+}
+.color-dot.selected,
+.color-dot:hover {
+    border: 2.5px solid #222;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 5px #222;
+}
+.stock-text {
+    font-size: 1rem;
+    margin-bottom: 16px;
+    color: #1a8917;
+    font-weight: 500;
+    min-height: 24px;
+}
+.stock-text:empty {
+    display: none;
+}
+.quantity-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+.quantity-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #f2f2f2;
+    color: #222;
+    font-size: 1.3rem;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.quantity-btn:disabled {
+    background: #eee;
+    color: #bbb;
+    cursor: not-allowed;
+}
+.quantity-input {
+    width: 48px;
+    height: 36px;
+    text-align: center;
+    border: 1.5px solid #eee;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    background: #fff;
+    font-weight: 600;
+}
+#add-to-cart-form .btn-dark {
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-top: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+@media (max-width: 991px) {
+    .product-detail-page {
+        padding: 18px 4px;
+    }
+    .product-info {
+        padding: 18px 0 0 0;
+    }
+    .product-main-image img {
+        max-height: 220px;
+    }
+}
+</style>
 <?php
 global $wpdb;
 
@@ -236,7 +430,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 ['product_id', formData.get('product_id')],
                 ['color', formData.get('color')],
                 ['size', formData.get('size')],
-                ['quantity', formData.get('quantity')]
+                ['quantity', formData.get('quantity')],
+                ['nonce', fasco_ajax.nonce] // Thêm dòng này!
             ])
         })
         .then(res => res.json())
@@ -258,19 +453,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['product_id'], $_POST['color'], $_POST['size'], $_POST['quantity'])) {
-    require_once get_template_directory() . '/functions.php'; // Đảm bảo đã có hàm add_to_cart
-    add_to_cart(
-        intval($_POST['product_id']),
-        $_POST['color'],
-        $_POST['size'],
-        intval($_POST['quantity'])
-    );
-    // Chuyển hướng sang trang cart
-    wp_redirect(home_url('/cart'));
-    exit;
-}
-?>
 
 <?php get_footer(); ?>

@@ -38,7 +38,7 @@ unset($item);
 ?>
 
 <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/cart.css">
-
+<div class="shopping-cart-page">
 <div class="container py-5">
     <?php if (!empty($cart_items)): ?>
         <h3 class="mb-4 fw-bold">Shopping Cart</h3>
@@ -109,9 +109,21 @@ unset($item);
         <h3 class="mb-4 fw-bold text-center">Vui lòng nhập sản phẩm vào giỏ hàng</h3>
     <?php endif; ?>
 </div>
+</div>
+
 
 <style>
+.shopping-cart-page {
+    margin-top: 80px; /* Tăng khoảng cách từ header tùy ý */
+}
+@media (max-width: 767.98px) {
+    .shopping-cart-page {
+        margin-top: 50px; /* Giảm khoảng cách cho màn hình nhỏ */
+    }
+}
+
 /* Table style */
+
 .table th, .table td {
     vertical-align: middle;
     background: #fff;

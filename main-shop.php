@@ -82,10 +82,10 @@ if (!empty($_GET['filter_sizes'])) {
 if (!empty($_GET['filter_prices'])) {
     $price_conditions = [];
     foreach ($_GET['filter_prices'] as $range) {
-        if ($range === '0-50') $price_conditions[] = "(p.base_price < 50)";
-        elseif ($range === '50-100') $price_conditions[] = "(p.base_price >= 50 AND p.base_price < 100)";
-        elseif ($range === '100-200') $price_conditions[] = "(p.base_price >= 100 AND p.base_price < 200)";
-        elseif ($range === '200-') $price_conditions[] = "(p.base_price >= 200)";
+        if ($range === '0-50') $price_conditions[] = "(p.discount_price < 50)";
+        elseif ($range === '50-100') $price_conditions[] = "(p.discount_price >= 50 AND p.discount_price < 100)";
+        elseif ($range === '100-200') $price_conditions[] = "(p.discount_price >= 100 AND p.discount_price < 200)";
+        elseif ($range === '200-') $price_conditions[] = "(p.discount_price >= 200)";
     }
     if ($price_conditions) {
         $where .= " AND (" . implode(' OR ', $price_conditions) . ")";
@@ -182,8 +182,8 @@ $all_sizes = $wpdb->get_col("SELECT DISTINCT size FROM product_variants WHERE st
 ");
 
 // Thiết lập khoảng giá cho bộ lọc
-$min_price = $wpdb->get_var("SELECT MIN(base_price) FROM products");
-$max_price = $wpdb->get_var("SELECT MAX(base_price) FROM products");
+$min_price = $wpdb->get_var("SELECT MIN(discount_price) FROM products");
+$max_price = $wpdb->get_var("SELECT MAX(discount_price) FROM products");
 $price_ranges = [
     '0-50' => 'Under $50',
     '50-100' => '$50 - $100',

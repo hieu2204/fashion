@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fullname'], $_POST['p
         $order_error = 'Giỏ hàng trống!';
     } else {
         // Tạo order_id (UUID)
-        $order_id = wp_generate_uuid4();
+        $order_id = fasco_generate_order_id();
 
         // Cấu hình VNPAY
         $vnp_TmnCode = 'GXTYW66O';
@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fullname'], $_POST['p
             $user_id = isset($_SESSION['user_id']) ? intval($_SESSION['user_id']) : null;
 
             // Lưu vào bảng orders
-            $result = $wpdb->insert('orders', [
+            $order_data = [
                 'order_id' => $order_id,
                 'user_id' => $user_id,
                 'customer_email' => $customer_email,
@@ -155,30 +155,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fullname'], $_POST['p
                 'customer_name' => $customer_name,
                 'total_amount' => $total,
                 'shipping_address' => $shipping_address,
-            ]);
-            
+            ];
+            $result = fasco_create_order($order_data, $cart_items);
             if ($result) {
-                // Lưu từng sản phẩm vào order_items
-                foreach ($cart_items as $item) {
-                    $variant_id = isset($item['variant_id']) ? $item['variant_id'] : null;
-                    $unit_price = $item['price'] * 2500;
-                    $wpdb->insert('order_items', [
-                        'order_id' => $order_id,
-                        'variant_id' => $variant_id,
-                        'quantity' => $item['quantity'],
-                        'unit_price' => $unit_price,
-                    ]);
-                }
-                
-                // Lưu thông tin thanh toán
-                $wpdb->insert('payments', [
-                    'order_id' => $order_id,
-                    'payment_method' => $payment_method,
-                    'amount' => $total,
-                    'status' => 'pending',
-                ]);
-                
-                // Xóa giỏ hàng
+                fasco_create_payment($order_id, $payment_method, $total, 'pending');
                 unset($_SESSION['cart']);
                 $order_success = true;
             } else {
@@ -188,7 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fullname'], $_POST['p
     }
 }
 ?>
-<div class="container py-5">
+<div class="checkout-page">
+   <div class="container py-5">
     <h2 class="mb-4 fw-bold text-center">FASCO Demo Checkout</h2>
     <div class="row">
         <div class="col-md-7">
@@ -272,4 +253,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fullname'], $_POST['p
         <div class="alert alert-danger"><?php echo esc_html($order_error); ?></div>
     <?php endif; ?>
 </div>
+</div>
+<style>
+    .checkout-page {
+        margin-top: 80px; /* Điều chỉnh khoảng cách từ header, thay đổi giá trị này nếu cần */
+    }
+    @media (max-width: 767.98px) {
+    .checkout-page {
+        margin-top: 50px;
+    }
+}
+
+</style>
+
 <?php get_footer(); ?>
