@@ -49,36 +49,49 @@ $total_pages = ceil($total_products / $per_page);
 // Khởi tạo biến where
 $where = "WHERE 1=1";
 
-// Filter màu
+// Tìm kiếm theo từ khóa
+if (!empty($_GET['s'])) {
+    $keyword = trim($_GET['s']);
+    $where .= " AND p.name LIKE '%" . esc_sql($keyword) . "%'";
+}
+
+// Filter theo màu
 if (!empty($_GET['filter_colors'])) {
-    $color_names = array_map(function($c) use ($wpdb) { return "'" . esc_sql($c) . "'"; }, $_GET['filter_colors']);
-    $where .= " AND p.product_id IN (
-        SELECT product_id FROM product_colors WHERE color_name IN (" . implode(',', $color_names) . ")
+    $colors = array_map('esc_sql', $_GET['filter_colors']);
+    $color_placeholders = "'" . implode("','", $colors) . "'";
+    $where .= " AND EXISTS (
+        SELECT 1 FROM product_colors pc
+        WHERE pc.product_id = p.product_id
+        AND pc.color_name IN ($color_placeholders)
     )";
 }
 
-// Filter size
+// Filter theo size
 if (!empty($_GET['filter_sizes'])) {
-    $sizes = array_map(function($s) use ($wpdb) { return "'" . esc_sql($s) . "'"; }, $_GET['filter_sizes']);
-    $where .= " AND p.product_id IN (
-        SELECT product_id FROM product_variants WHERE size IN (" . implode(',', $sizes) . ") AND stock_quantity > 0
+    $sizes = array_map('esc_sql', $_GET['filter_sizes']);
+    $size_placeholders = "'" . implode("','", $sizes) . "'";
+    $where .= " AND EXISTS (
+        SELECT 1 FROM product_variants pv
+        WHERE pv.product_id = p.product_id
+        AND pv.size IN ($size_placeholders)
+        AND pv.stock_quantity > 0
     )";
 }
 
-// Filter giá
+// Filter theo price
 if (!empty($_GET['filter_prices'])) {
     $price_conditions = [];
     foreach ($_GET['filter_prices'] as $range) {
-        if (strpos($range, '-') !== false) {
-            list($min, $max) = explode('-', $range);
-            if ($max === '') $max = 1000000; // Giá trên $200
-            $price_conditions[] = "(COALESCE(p.discount_price, p.base_price) BETWEEN $min AND $max)";
-        }
+        if ($range === '0-50') $price_conditions[] = "(p.base_price < 50)";
+        elseif ($range === '50-100') $price_conditions[] = "(p.base_price >= 50 AND p.base_price < 100)";
+        elseif ($range === '100-200') $price_conditions[] = "(p.base_price >= 100 AND p.base_price < 200)";
+        elseif ($range === '200-') $price_conditions[] = "(p.base_price >= 200)";
     }
     if ($price_conditions) {
         $where .= " AND (" . implode(' OR ', $price_conditions) . ")";
     }
 }
+
 // Get products for current page
 $products_query = "
     SELECT
@@ -475,9 +488,158 @@ $price_ranges = [
             max-height: 160px;
         }
     }
+
+    /* Pagination Styles */
+.pagination-custom {
+    margin: 2rem 0;
+}
+
+.pagination-custom .page-link {
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 0.75rem;
+    margin: 0 2px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.pagination-custom .page-link:hover {
+    color: #fff;
+    background-color: #333;
+    border-color: #333;
+}
+
+.pagination-custom .page-item.active .page-link {
+    color: #fff;
+    background-color: #333;
+    border-color: #333;
+}
+
+.pagination-custom .page-item.disabled .page-link {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+}
+
+.pagination-debug {
+    background-color: #f8f9fa;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+/* Product Color Switching Fix */
+.product-color-dot {
+    transition: all 0.2s ease;
+    cursor: pointer !important;
+    position: relative;
+}
+
+.product-color-dot:hover {
+    transform: scale(1.1);
+}
+
+.product-color-dot.active {
+    border: 1.5px solid rgba(0, 0, 0, 1) !important;   /* Viền đỏ nổi bật */
+    box-shadow: 0 0 0 1px #fff, 0 0 0 3px rgba(0, 0, 0, 1);
+    outline: none;
+}
+
+/* Loading overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.loading-overlay.show {
+    display: flex;
+}
+
+/* Thêm khoảng cách phía trên cho toàn bộ nội dung */
+.container-fluid.py-4 {
+    margin-top: 32px; /* hoặc 40px nếu muốn rộng hơn */
+}
+
+/* Tạo khoảng cách đều hai bên cho filter và sản phẩm */
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Sidebar filter cách trái và phải đều */
+.sidebar {
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+/* Đảm bảo sản phẩm không dính sát filter */
+.col-lg-9 {
+    padding-left: 24px;
+}
+
+/* Đảm bảo filter không dính sát lề trái */
+.col-lg-3 {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+/* Responsive: giảm khoảng cách trên mobile */
+@media (max-width: 991px) {
+/* Thêm khoảng cách phía trên cho toàn bộ nội dung */
+.container-fluid.py-4 {
+    margin-top: 32px; /* hoặc 40px nếu muốn rộng hơn */
+}
+
+/* Tạo khoảng cách đều hai bên cho filter và sản phẩm */
+.row {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/* Sidebar filter cách trái và phải đều */
+.sidebar {
+    margin-left: 24px;
+    margin-right: 24px;
+}
+
+/* Đảm bảo sản phẩm không dính sát filter */
+.col-lg-9 {
+    padding-left: 24px;
+}
+
+/* Đảm bảo filter không dính sát lề trái */
+.col-lg-3 {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+/* Responsive: giảm khoảng cách trên mobile */
+@media (max-width: 991px) {
+    .container-fluid.py-4 {
+        margin-top: 16px;
+    }
+    .sidebar,
+    .col-lg-9 {
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
 </style>
 <div class="container-fluid py-4">
     <div class="row">
+        <?php if (empty($_GET['s'])): ?>
         <div class="col-lg-3">
             <!-- Filter Sidebar -->
             <div class="sidebar">
@@ -522,7 +684,8 @@ $price_ranges = [
                 </form>
             </div>
         </div>
-        <div class="col-lg-9">
+        <?php endif; ?>
+        <div class="<?php echo empty($_GET['s']) ? 'col-lg-9' : 'col-12'; ?>">
             <!-- Products Grid -->
             <div class="row" id="products-container">
                 <?php if (!empty($products)): ?>
@@ -550,16 +713,20 @@ $price_ranges = [
                                         <span class="sale-badge" style="top:14px;left:14px;"><?php _e('SALE', 'textdomain'); ?></span>
                                     <?php endif; ?>
                                     <?php if ($first_image_url): ?>
-                                        <img src="<?php echo esc_url(get_template_directory_uri() . '/assets' . $first_image_url); ?>"
-                                             alt="<?php echo esc_attr($product->name); ?>"
-                                             class="product-main-image img-fluid"
-                                             data-color-id="<?php echo $first_color_id; ?>"
-                                             style="max-height:220px;object-fit:cover;border-radius:12px;">
+                                        <a href="<?php echo esc_url( get_permalink( get_page_by_path('product-detail') ) . '?product_id=' . $product->product_id ); ?>">
+                                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets' . $first_image_url); ?>"
+                                                 alt="<?php echo esc_attr($product->name); ?>"
+                                                 class="product-main-image img-fluid"
+                                                 data-color-id="<?php echo $first_color_id; ?>"
+                                                 style="max-height:300px;object-fit:cover;">
+                                        </a>
                                     <?php else: ?>
-                                        <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/no-image.jpg'); ?>"
-                                             alt="No image"
-                                             class="product-main-image img-fluid"
-                                             style="max-height:220px;object-fit:cover;border-radius:12px;">
+                                        <a href="<?php echo esc_url( get_permalink( get_page_by_path('product-detail') ) . '?product_id=' . $product->product_id ); ?>">
+                                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/no-image.jpg'); ?>"
+                                                 alt="No image"
+                                                 class="product-main-image img-fluid"
+                                                 style="max-height:300px;object-fit:cover;">
+                                        </a>
                                     <?php endif; ?>
 
                                     <?php
@@ -576,37 +743,24 @@ $price_ranges = [
                                     endforeach;
                                     ?>
                                 </div>
-                                <div class="card-body product-info text-center px-2 py-3" style="background:#fff;">
-                                    <div class="d-flex justify-content-center align-items-center mb-2" style="min-height:24px;">
-                                        <?php if (!empty($colors_data)): ?>
-                                            <div class="product-colors" style="margin-bottom:0;">
-                                                <?php 
-                                                $color_map = [
-                                                    'Red' => '#ff6b6b', 'Blue' => '#2196f3', 'Green' => '#4caf50',
-                                                    'Yellow' => '#ffeb3b', 'Orange' => '#ffa500', 'Purple' => '#9c27b0',
-                                                    'Pink' => '#e91e63', 'Black' => '#333', 'White' => '#fff',
-                                                    'Gray' => '#607d8b', 'Brown' => '#795548'
-                                                ];
-                                                $color_names_rendered = [];
-                                                $first = true;
-                                                foreach ($colors_data as $color_id => $color_info):
-                                                    if (in_array($color_info['color_name'], $color_names_rendered)) continue;
-                                                    $color_names_rendered[] = $color_info['color_name'];
-                                                    $color_code = isset($color_map[$color_info['color_name']]) ? $color_map[$color_info['color_name']] : '#ccc';
-                                                ?>
-                                                    <span class="product-color-dot<?php echo $first ? ' active' : ''; ?>"
-                                                          data-color-id="<?php echo $color_id; ?>"
-                                                          style="background-color: <?php echo $color_code; ?>; border:1.5px solid #ddd; width:18px; height:18px; display:inline-block; border-radius:50%; margin:0 2px; cursor:pointer;"
-                                                          title="<?php echo esc_attr($color_info['color_name']); ?>"></span>
-                                                <?php
-                                                    $first = false;
-                                                endforeach;
-                                                ?>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <h6 class="product-title mb-1" style="font-size:15px;font-weight:600;min-height:36px;line-height:1.3;"><?php echo esc_html($product->name); ?></h6>
-                                    <div class="product-price mb-1" style="font-size:16px;">
+                                <div class="card-body product-info text-center">
+                                    <h6 class="product-title mb-2" style="min-height:38px;">
+                                        <a href="<?php echo esc_url( get_permalink( get_page_by_path('product-detail') ) . '?product_id=' . $product->product_id ); ?>" class="text-dark text-decoration-none">
+                                            <?php echo esc_html($product->name); ?>
+                                        </a>
+                                    </h6>
+                                    <?php if (!empty($colors_data)): ?>
+                                        <div class="product-colors mb-2">
+                                            <?php foreach ($colors_data as $color_id => $color_info): ?>
+                                                <span class="product-color-dot<?php echo ($color_id == $first_color_id) ? ' active' : ''; ?>"
+                                                      title="<?php echo esc_attr($color_info['color_name']); ?>"
+                                                      data-color-id="<?php echo $color_id; ?>"
+                                                      style="background:<?php echo get_color_hex_by_name($color_info['color_name']); ?>; border-color:#ccc;">
+                                                </span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="product-price mb-2">
                                         <span class="fw-bold text-dark">$<?php echo number_format($display_price, 2); ?></span>
                                         <?php if ($has_discount): ?>
                                             <span class="old-price text-muted ms-2" style="text-decoration:line-through;">$<?php echo number_format($product->base_price, 2); ?></span>
@@ -782,3 +936,23 @@ jQuery(document).ready(function($) {
         <img src="<?php echo get_template_directory_uri(); ?>/assets/images/model-right.png" alt="" style="position:absolute; right:0; bottom:0; width:120px; max-width:30vw; z-index:1;">
     </div>
 </div>
+
+<?php
+// Map tên màu sang mã màu hex
+function get_color_hex_by_name($color_name) {
+    $map = [
+        'RED' => '#ff0000',
+        'GREEN' => '#00ff00',
+        'BLUE' => '#0074d9',
+        'YELLOW' => '#ffe600',
+        'WHITE' => '#ffffff',
+        'BLACK' => '#222222',
+        'BEIGE' => '#f5f5dc',
+        'PINK' => '#ffb6c1',
+        'BROWN' => '#8b4513',
+        // Thêm các màu khác nếu cần
+    ];
+    $key = strtoupper(trim($color_name));
+    return $map[$key] ?? '#eee';
+}
+?>

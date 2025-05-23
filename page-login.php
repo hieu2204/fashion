@@ -6,6 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+$pdo = get_pdo_connection();
 
 
 // Xử lý form đăng nhập
@@ -19,12 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['log'], $_POST['pwd'])
             $stmt->execute(['id' => trim($_POST['log'])]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if ($user && password_verify(trim($_POST['pwd']), $user['password_hash'])) {
+            if ($user && password_verify($_POST['pwd'], $user['password_hash'])) {
                 $_SESSION['user_id'] = $user['user_id'];
                 $login_success = true;
-                // Không redirect ở đây nữa
-                // wp_redirect(home_url());
-                // exit;
             } else {
                 $error = 'Email/số điện thoại hoặc mật khẩu không đúng.';
             }
@@ -38,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['log'], $_POST['pwd'])
 }
 
 get_header();
-$pdo = get_pdo_connection();
 ?>
 <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/css/login.css">
 
@@ -114,5 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
 
 <?php get_footer(); ?>
